@@ -1,5 +1,21 @@
 const PROFILE_URL = "./assets/data/profiles.json";
 const COLLECTIBLES_URL = "./assets/data/collectibles.generated.json";
+const SNAPSHOT_DIR = "./assets/data/profile-snippets";
+
+const SENKURO_CSS = [
+  "assets/vendor/senkuro/source/_slug_-CPGSTIMs.css",
+  "assets/vendor/senkuro/source/client-CmLIfJvQ.css",
+  "assets/vendor/senkuro/source/security-U6eeA1dE.css",
+  "assets/vendor/senkuro/source/BaseBanner-WpaAOtR_.css",
+  "assets/vendor/senkuro/source/TextExpander-DQVKOmmP.css",
+  "assets/vendor/senkuro/source/TiptapRender-BN4Bquya.css",
+  "assets/vendor/senkuro/source/CollectibleCardPreview-BUvQEADV.css",
+  "assets/vendor/senkuro/source/CollectibleCard-C63z50S9.css",
+  "assets/vendor/senkuro/source/RelatedCard-yHlzMfGL.css",
+  "assets/vendor/senkuro/source/BaseTag-BzoH9u0U.css",
+  "assets/vendor/senkuro/source/floating-vue-EcrtE6ba.css",
+  "assets/vendor/senkuro/source/index-local.css"
+];
 
 const app = document.querySelector("#app");
 const drawer = document.querySelector("#previewDrawer");
@@ -43,6 +59,9 @@ const typeBySlot = {
 
 let data = { profiles: [] };
 let catalog = { items: { AVATAR: [], FRAME: [], BANNER: [], WALLPAPER: [] } };
+let renderVersion = 0;
+const snippetCache = new Map();
+
 let state = {
   profileId: "",
   device: "desktop",
@@ -75,12 +94,13 @@ async function init() {
   data = profileData;
   catalog = normalizeCatalog(collectibleData);
   state.profileId = data.profiles[0]?.id || "";
+
   applyProfileDefaults();
   bindControls();
   fillProfileSelect();
   fillCatalogSelects();
   syncControls();
-  render();
+  await render();
 }
 
 async function fetchJson(url) {
@@ -89,6 +109,14 @@ async function fetchJson(url) {
     throw new Error(`${url}: ${response.status}`);
   }
   return response.json();
+}
+
+async function fetchText(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`${url}: ${response.status}`);
+  }
+  return response.text();
 }
 
 function normalizeCatalog(source) {
@@ -140,7 +168,7 @@ function bindControls() {
     releaseObjectUrls();
     applyProfileDefaults();
     syncControls();
-    render();
+    void render();
   });
 
   document.querySelectorAll(".segmented__btn").forEach((button) => {
@@ -149,7 +177,7 @@ function bindControls() {
       document.querySelectorAll(".segmented__btn").forEach((item) => {
         item.classList.toggle("is-active", item === button);
       });
-      render();
+      void render();
     });
   });
 
@@ -157,7 +185,7 @@ function bindControls() {
     if (control.toggle) {
       control.toggle.addEventListener("change", () => {
         state.enabled[slot] = control.toggle.checked;
-        render();
+        void render();
       });
     }
 
@@ -166,14 +194,14 @@ function bindControls() {
       if (!selected) return;
       state.cosmetics[slot] = mediaFromCatalog(selected, slot);
       control.url.value = "";
-      render();
+      void render();
     });
 
     control.url.addEventListener("change", () => {
       const value = control.url.value.trim();
       if (!value) return;
       state.cosmetics[slot] = mediaFromUrl(value, slot, value);
-      render();
+      void render();
     });
 
     control.file.addEventListener("change", () => {
@@ -189,7 +217,7 @@ function bindControls() {
         kind: file.type.startsWith("video/") ? "video" : "image",
         uploaded: true
       };
-      render();
+      void render();
     });
   });
 
@@ -197,7 +225,7 @@ function bindControls() {
     releaseObjectUrls();
     applyProfileDefaults();
     syncControls();
-    render();
+    void render();
   });
 }
 
@@ -263,7 +291,11 @@ function mediaFromCatalog(item, slot) {
 
 function bestVariants(item, slot) {
   const variants = item.variants || item.image?.variants || [];
-  const target = slot === "wallpaper" ? { width: 1920, height: 1080 } : slot === "banner" ? { width: 1920, height: 480 } : null;
+  const target = slot === "wallpaper"
+    ? { width: 1920, height: 1080 }
+    : slot === "banner"
+      ? { width: 1920, height: 480 }
+      : null;
   const webm = pickVariant(variants, "WEBM", target);
   const mp4 = pickVariant(variants, "MP4", target);
   return { webm: webm?.url || null, mp4: mp4?.url || null };
@@ -297,379 +329,282 @@ function mediaFromUrl(url, slot, title = "Custom media") {
   };
 }
 
-function render() {
+async function render() {
+  const currentVersion = ++renderVersion;
   const profile = activeProfile();
   if (!profile) return;
 
-  const isBannerEnabled = Boolean(state.enabled.banner && state.cosmetics.banner);
+  const snippet = await loadProfileSnippet(profile.id);
+  if (currentVersion !== renderVersion) return;
+
   app.className = "";
   app.innerHTML = `
-    <div class="preview-stage is-${state.device}">
-      ${renderWallpaper()}
-      ${renderDesktopNav(profile)}
-      ${renderMobileTopbar(profile)}
-      <main class="client">
-        <section class="container container--wallpaper ${isBannerEnabled ? "container--banner" : ""}">
-          <div class="client-top">
-            ${isBannerEnabled ? renderBanner() : ""}
-            ${renderClientPanel(profile)}
-          </div>
-          ${renderBody(profile)}
-        </section>
-      </main>
-      ${renderMobileBottomNav()}
+    <div class="preview-host">
+      <div class="preview-host__inner">
+        <iframe
+          id="profileFrame"
+          class="profile-frame is-${escapeAttr(state.device)}"
+          title="${escapeAttr(profile.name)}"
+          sandbox="allow-same-origin"
+        ></iframe>
+      </div>
     </div>
   `;
+
+  const frame = document.querySelector("#profileFrame");
+  const settleFrame = () => {
+    hydrateFrameState(frame);
+    resizeFrame(frame);
+    requestAnimationFrame(() => resizeFrame(frame));
+    setTimeout(() => resizeFrame(frame), 250);
+  };
+  frame.addEventListener("load", settleFrame);
+  frame.srcdoc = buildFrameDocument(profile, snippet);
+  [50, 250, 1000, 2500].forEach((delay) => {
+    setTimeout(() => {
+      if (document.body.contains(frame)) settleFrame();
+    }, delay);
+  });
 }
 
-function renderWallpaper() {
+async function loadProfileSnippet(profileId) {
+  if (!snippetCache.has(profileId)) {
+    const text = await fetchText(`${SNAPSHOT_DIR}/${profileId}.html`);
+    snippetCache.set(profileId, text);
+  }
+  return snippetCache.get(profileId);
+}
+
+function buildFrameDocument(profile, snippet) {
+  const processedSnapshot = processSnapshot(snippet, profile);
+  const cssLinks = SENKURO_CSS
+    .map((href) => `<link rel="stylesheet" href="${absoluteAssetUrl(href)}">`)
+    .join("");
+
+  return `<!doctype html>
+<html lang="ru" data-theme="dark" class="${state.device === "mobile" ? "preview-device-mobile" : ""}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>${escapeHtml(profile.name)}</title>
+  ${cssLinks}
+  <style>
+    html, body { background: var(--bg-primary); overflow-x: hidden; }
+    html.preview-device-mobile {
+      scrollbar-gutter: auto !important;
+      scrollbar-width: none;
+    }
+    html.preview-device-mobile::-webkit-scrollbar,
+    html.preview-device-mobile body::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    .wrapper { min-height: 100vh; }
+    a { cursor: default; pointer-events: none; }
+    video.wallpaper-wrapper-media,
+    video.client-bg__cover { pointer-events: none; }
+    .client-bg .preview-media-fallback {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .preview-media-video.preview-media-ready + .preview-media-fallback {
+      display: none;
+    }
+    video.wallpaper-wrapper-media::-webkit-media-controls,
+    video.client-bg__cover::-webkit-media-controls {
+      display: none !important;
+      opacity: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"><div class="wrapper">${processedSnapshot}</div></div>
+</body>
+</html>`;
+}
+
+function processSnapshot(snippet, profile) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div id="snapshot-root">${snippet}</div>`, "text/html");
+  const root = doc.querySelector("#snapshot-root");
+
+  applyWallpaper(root);
+  applyBanner(root);
+  applyAvatar(root, profile);
+  applyFrame(root);
+  applyHydratedSnapshotState(root);
+
+  return root.innerHTML;
+}
+
+function applyHydratedSnapshotState(root) {
+  root.querySelectorAll(".text-expander__btn").forEach((button) => {
+    button.classList.add("text-expander__btn--hide");
+  });
+}
+
+function applyWallpaper(root) {
+  const wrapper = root.querySelector(".wallpaper-wrapper");
+  if (!wrapper) return;
+
   if (!state.enabled.wallpaper || !state.cosmetics.wallpaper) {
-    return `<div class="wallpaper-wrapper client-wallpaper"><div class="wallpaper-placeholder"></div></div>`;
+    wrapper.removeAttribute("style");
+    wrapper.innerHTML = "";
+    return;
   }
-  return `<div class="wallpaper-wrapper client-wallpaper">${renderMedia(state.cosmetics.wallpaper, "wallpaper-wrapper-media", "")}</div>`;
+
+  wrapper.classList.add("client-wallpaper");
+  applyMediaFallback(wrapper, state.cosmetics.wallpaper, "center top");
+  wrapper.innerHTML = renderMedia(state.cosmetics.wallpaper, "wallpaper-wrapper-media", "", {
+    backgroundPosition: "center top"
+  });
 }
 
-function renderBanner() {
-  return `<div class="banner-wrapper client-bg">${renderMedia(state.cosmetics.banner, "client-bg__cover", "")}</div>`;
-}
+function applyBanner(root) {
+  const container = root.querySelector(".container--wallpaper");
+  const top = root.querySelector(".client-top");
+  if (!container || !top) return;
 
-function renderClientPanel(profile) {
-  return `
-    <div class="client-panel">
-      <a class="client-panel__avatar" href="#" aria-label="${escapeAttr(profile.name)}">
-        ${state.enabled.frame && state.cosmetics.frame ? `<img class="avatar-frame" src="${escapeAttr(state.cosmetics.frame.original)}" alt="avatar frame">` : ""}
-        <img class="avatar-image" src="${escapeAttr(state.cosmetics.avatar?.original || profile.cosmetics.avatar.original)}" alt="${escapeAttr(profile.name)}">
-        <span class="client-panel__avatar-online"></span>
-      </a>
-      <div class="client-panel__info">
-        <div class="client-header">
-          <h1 class="caption caption-size-lg">${escapeHtml(profile.name)}</h1>
-          ${profile.badge ? `<img class="client-badge" src="${escapeAttr(profile.badge)}" alt="">` : ""}
-          ${profile.verified ? `<span class="verified-mark">✓</span>` : ""}
-          <a class="lvl" href="#">
-            <span class="lvl__tag">${profile.level}</span>
-            <span class="lvl__text">${state.device === "mobile" ? "Ур." : "Уровень"}</span>
-          </a>
-        </div>
-        <div class="client-info">
-          <div class="client-info__desc">${escapeHtml(profile.statusText)}</div>
-          <div class="client-info__cnt">
-            ${renderMobileCounter(profile.friends.count, "Друзей", profile.friends.items)}
-            ${renderMobileCounter(profile.following.count, "Подписок", profile.following.items)}
-          </div>
-        </div>
-      </div>
-      <div class="client-nav">
-        <button class="button button--secondary" type="button">Написать</button>
-        <button class="button button--accent" type="button">Добавить в друзья</button>
-        <button class="button button--secondary button--icon" type="button" aria-label="more options">...</button>
-      </div>
-    </div>
-  `;
-}
+  let banner = top.querySelector(".banner-wrapper.client-bg");
+  const enabled = Boolean(state.enabled.banner && state.cosmetics.banner);
+  container.classList.toggle("container--banner", enabled);
 
-function renderMobileCounter(count, label, items) {
-  return `
-    <a class="client-info__item" href="#">
-      <span class="client-info__avatars">${items.slice(0, 3).map((item) => `<img src="${escapeAttr(item.avatar)}" alt="${escapeAttr(item.name)}">`).join("")}</span>
-      <span class="client-info__item-text">${count} ${label}</span>
-    </a>
-  `;
-}
-
-function renderBody(profile) {
-  return `
-    <div class="client-body">
-      <section class="client-body__cnt">
-        ${renderCardsSection(profile)}
-        ${renderAchievementsSection(profile)}
-        ${renderLibrarySection(profile)}
-        ${renderRelationshipsSection(profile, true)}
-      </section>
-      <aside class="client-body__aside">
-        ${renderHistoryAside(profile)}
-        ${renderAboutAside(profile)}
-        ${renderGuildAside(profile)}
-        ${renderStatsAside(profile)}
-        ${renderFriendsAside(profile)}
-        ${renderTeamsAside(profile)}
-        ${renderRelationshipsSection(profile, false)}
-      </aside>
-    </div>
-  `;
-}
-
-function renderCardsSection(profile) {
-  return `
-    <article class="client-body__item">
-      <div class="client-body__header">
-        <h2 class="caption caption-size-md">Коллекционные карточки</h2>
-        <div class="section-actions">
-          <a class="section-action" href="#">Предложить обмен</a>
-          <a class="section-action" href="#">Все карточки</a>
-        </div>
-      </div>
-      <div class="user-slider user-slider__cards">
-        <div class="user-slider__container">
-          ${profile.cards.map(renderCollectibleCard).join("")}
-        </div>
-      </div>
-    </article>
-  `;
-}
-
-function renderCollectibleCard(card) {
-  const media = card.video
-    ? renderMedia({ webm: card.video, original: card.image, kind: "video" }, "", card.title)
-    : `<img src="${escapeAttr(card.image)}" alt="${escapeAttr(card.title)}">`;
-  return `
-    <a class="collectible-card ${card.rare ? "collectible-card--rare" : ""}" href="#">
-      ${media}
-      <span class="collectible-card__grade">${escapeHtml(card.grade)}</span>
-      <span class="collectible-card__title">${escapeHtml(card.title)}</span>
-      <span class="collectible-card__sub">${escapeHtml(card.subtitle)}</span>
-    </a>
-  `;
-}
-
-function renderAchievementsSection(profile) {
-  return `
-    <article class="client-body__item">
-      <div class="client-body__header">
-        <h2 class="caption caption-size-md">Достижения <span class="heading-count">${profile.achievements.total}</span></h2>
-        <div class="section-actions"><a class="section-action" href="#">Все достижения</a></div>
-      </div>
-      <div class="user-slider">
-        <div class="achievement-row">
-          ${profile.achievements.items.map((src) => `<a class="user-achievement" href="#"><img src="${escapeAttr(src)}" alt=""></a>`).join("")}
-        </div>
-      </div>
-    </article>
-  `;
-}
-
-function renderLibrarySection(profile) {
-  return `
-    <article class="client-body__item">
-      <div class="client-body__header">
-        <h2 class="caption caption-size-md">Библиотека манги <span class="heading-count">${profile.library.total}</span></h2>
-        <div class="section-actions"><a class="section-action" href="#">Вся манга</a></div>
-      </div>
-      <div class="client-tabs">
-        ${profile.library.tabs.map((tab, index) => `
-          <a class="client-tabs__item ${index === 0 ? "is-active" : ""}" href="#">
-            ${escapeHtml(tab.label)} <span class="client-tabs__count">${tab.count}</span>
-          </a>
-        `).join("")}
-      </div>
-      <div class="user-slider">
-        <div class="user-slider__container">
-          ${profile.library.items.map(renderMangaCard).join("")}
-        </div>
-      </div>
-    </article>
-  `;
-}
-
-function renderMangaCard(item) {
-  return `
-    <article class="card-main">
-      <a href="#">
-        <div class="card-main__cover">
-          <img src="${escapeAttr(item.cover)}" alt="${escapeAttr(item.title)}">
-          <span class="card-main__tag">${escapeHtml(item.type)}</span>
-          ${item.status ? `<span class="card-main__status">${escapeHtml(item.status)}</span>` : ""}
-        </div>
-        <h3 class="card-title">${escapeHtml(item.title)}</h3>
-      </a>
-    </article>
-  `;
-}
-
-function renderHistoryAside(profile) {
-  return `
-    <article class="card card--other">
-      <div class="card__header"><h2 class="card__title">История действий</h2></div>
-      <div class="history-list">
-        ${profile.history.map((item) => `
-          <div class="history-item">
-            <img src="${escapeAttr(item.cover)}" alt="">
-            <div>
-              <div class="history-item__time">${escapeHtml(item.time)}</div>
-              <div class="history-item__title">${escapeHtml(item.title)}</div>
-              <div class="history-item__meta">${escapeHtml(item.meta)}</div>
-            </div>
-          </div>
-        `).join("")}
-      </div>
-    </article>
-  `;
-}
-
-function renderAboutAside(profile) {
-  return `
-    <article class="card card--other">
-      <div class="card__header"><h2 class="card__title">Обо мне</h2></div>
-      <div class="info-list">
-        <div>
-          <div class="info-label">Описание</div>
-          <div class="info-value">${escapeHtml(profile.about.description)}</div>
-        </div>
-        <div>
-          <div class="info-label">День рождения</div>
-          <div class="info-value">${escapeHtml(profile.about.birthday)}</div>
-        </div>
-        <div>
-          <div class="info-label">Пол</div>
-          <div class="info-value">${escapeHtml(profile.about.gender)}</div>
-        </div>
-        <div>
-          <div class="info-label">Ссылки</div>
-          <div class="info-value">${escapeHtml(profile.about.links)}</div>
-        </div>
-      </div>
-    </article>
-  `;
-}
-
-function renderGuildAside(profile) {
-  return `
-    <article class="card card--other">
-      <div class="card__header"><h2 class="card__title">Гильдия</h2></div>
-      <div class="guild-card">
-        <img src="${escapeAttr(profile.guild.avatar)}" alt="${escapeAttr(profile.guild.name)}">
-        <div>
-          <div class="guild-card__name guild-text-color--sunset_red">${escapeHtml(profile.guild.name)}</div>
-          <div class="history-item__meta">${profile.guild.level} Уровень</div>
-        </div>
-      </div>
-    </article>
-  `;
-}
-
-function renderStatsAside(profile) {
-  return `
-    <article class="card card--other">
-      <div class="card__header"><h2 class="card__title">Статистика</h2></div>
-      <div class="user-stats">
-        ${profile.stats.items.map((item) => `
-          <div class="user-stats__item user-stats__item--${escapeAttr(item.tone)}">
-            <span class="user-stats__icon"></span>
-            <div class="user-stats__body">
-              <div class="user-stats__count">${escapeHtml(item.value)}</div>
-              <div class="user-stats__text">${escapeHtml(item.label)}</div>
-            </div>
-          </div>
-        `).join("")}
-        <div class="user-stats__result">${escapeHtml(profile.stats.rank)}</div>
-      </div>
-    </article>
-  `;
-}
-
-function renderFriendsAside(profile) {
-  return `
-    <article class="card card--other">
-      <div class="card__header"><h2 class="card__title">Друзья <span class="heading-count">${profile.friends.count}</span></h2></div>
-      <div class="friend-list">
-        ${profile.friends.items.slice(0, 12).map((friend) => `<img class="friend-avatar" src="${escapeAttr(friend.avatar)}" alt="${escapeAttr(friend.name)}">`).join("")}
-      </div>
-    </article>
-  `;
-}
-
-function renderTeamsAside(profile) {
-  return `
-    <article class="card card--other">
-      <div class="card__header"><h2 class="card__title">В составе команд</h2></div>
-      <div class="team-list">
-        ${profile.teams.map((team) => `
-          <div class="team-item">
-            <img src="${escapeAttr(team.avatar)}" alt="${escapeAttr(team.name)}">
-            <div>
-              <div class="team-item__title">${escapeHtml(team.name)}</div>
-              <div class="team-item__meta">${escapeHtml(team.role)}</div>
-            </div>
-          </div>
-        `).join("")}
-      </div>
-    </article>
-  `;
-}
-
-function renderRelationshipsSection(profile, mobile) {
-  return `
-    <article class="${mobile ? "client-body__item client-body__item--mobile" : "card card--other"}">
-      <div class="${mobile ? "client-body__header" : "card__header"}">
-        <h2 class="${mobile ? "caption caption-size-md" : "card__title"}">${escapeHtml(profile.relationships.title)} <span class="heading-count">${profile.relationships.items.length}</span></h2>
-      </div>
-      <div class="relation-list">
-        ${profile.relationships.items.map((item) => `
-          <article class="relation-card">
-            <div class="relation-card__media"><img src="${escapeAttr(item.image)}" alt="${escapeAttr(item.name)}"></div>
-            <h3>${escapeHtml(item.name)}</h3>
-            <p>${escapeHtml(item.role)}</p>
-          </article>
-        `).join("")}
-      </div>
-    </article>
-  `;
-}
-
-function renderDesktopNav(profile) {
-  return `
-    <nav class="site-nav" aria-label="Senkuro">
-      <div class="site-nav__inner">
-        <a class="site-nav__logo" href="#">SENKURO</a>
-        <span class="site-nav__spacer"></span>
-        <a class="nav-button" href="#"><span class="nav-icon"></span>Поиск</a>
-        <a class="nav-button" href="#"><span class="nav-icon"></span>Каталог</a>
-        <a class="nav-button" href="#"><span class="nav-icon"></span>Экосистема</a>
-        <span class="site-nav__spacer"></span>
-        <a class="nav-button" href="#" aria-label="Закладки"><span class="nav-icon"></span></a>
-        <a class="nav-button" href="#" aria-label="Уведомление"><span class="nav-icon"></span></a>
-        <a class="nav-avatar" href="#">
-          ${state.enabled.frame && state.cosmetics.frame ? `<img class="nav-avatar__frame" src="${escapeAttr(state.cosmetics.frame.original)}" alt="avatar frame">` : ""}
-          <img class="nav-avatar__image" src="${escapeAttr(state.cosmetics.avatar?.original || profile.cosmetics.avatar.original)}" alt="${escapeAttr(profile.name)}">
-        </a>
-      </div>
-    </nav>
-  `;
-}
-
-function renderMobileTopbar(profile) {
-  return `
-    <nav class="mobile-topbar" aria-label="Senkuro mobile">
-      <button class="button button--secondary button--icon" type="button" aria-label="Назад">‹</button>
-      <div class="mobile-topbar__title">${escapeHtml(profile.name)}</div>
-      <button class="button button--secondary button--icon" type="button" aria-label="Меню">...</button>
-    </nav>
-  `;
-}
-
-function renderMobileBottomNav() {
-  return `
-    <nav class="mobile-bottom-nav" aria-label="Нижняя навигация">
-      ${["Главная", "Каталог", "Моё", "Уведы", "Ещё"].map((item) => `
-        <a class="mobile-bottom-nav__item" href="#"><span class="mobile-bottom-nav__icon"></span>${item}</a>
-      `).join("")}
-    </nav>
-  `;
-}
-
-function renderMedia(media, className, alt) {
-  const classes = className ? ` class="${escapeAttr(className)}"` : "";
-  if (!media) return "";
-  if (media.webm || media.mp4 || media.kind === "video") {
-    return `
-      <video${classes} autoplay loop muted playsinline preload="auto" poster="${escapeAttr(media.original || "")}">
-        ${media.webm ? `<source src="${escapeAttr(media.webm)}" type="video/webm">` : ""}
-        ${media.mp4 ? `<source src="${escapeAttr(media.mp4)}" type="video/mp4">` : ""}
-        ${media.original ? `<source src="${escapeAttr(media.original)}">` : ""}
-      </video>
-    `;
+  if (!enabled) {
+    banner?.remove();
+    return;
   }
-  return `<img${classes} src="${escapeAttr(media.original)}" alt="${escapeAttr(alt || media.title || "")}">`;
+
+  if (!banner) {
+    banner = root.ownerDocument.createElement("div");
+    banner.className = "banner-wrapper client-bg";
+    top.insertBefore(banner, top.firstChild);
+  }
+
+  applyMediaFallback(banner, state.cosmetics.banner, "center");
+  banner.innerHTML = renderMedia(state.cosmetics.banner, "client-bg__cover", "", {
+    backgroundPosition: "center"
+  });
+}
+
+function applyAvatar(root, profile) {
+  const avatar = root.querySelector(".client-panel__avatar .avatar-wrapper__img img");
+  if (!avatar) return;
+  const media = state.cosmetics.avatar || profile.cosmetics.avatar;
+  if (!media?.original) return;
+  avatar.setAttribute("src", media.original);
+  avatar.setAttribute("alt", profile.name);
+}
+
+function applyFrame(root) {
+  const avatar = root.querySelector(".client-panel__avatar .avatar");
+  const avatarPic = root.querySelector(".client-panel__avatar .avatar-pic");
+  if (!avatar || !avatarPic) return;
+
+  let frame = avatar.querySelector(".avatar-frame");
+  const enabled = Boolean(state.enabled.frame && state.cosmetics.frame?.original);
+
+  if (!enabled) {
+    frame?.remove();
+    return;
+  }
+
+  if (!frame) {
+    frame = root.ownerDocument.createElement("div");
+    frame.className = "avatar-frame";
+    avatar.insertBefore(frame, avatarPic);
+  }
+
+  frame.innerHTML = `<img src="${escapeAttr(state.cosmetics.frame.original)}" alt="avatar frame">`;
+}
+
+function renderMedia(media, className, alt, options = {}) {
+  const source = media?.webm || media?.mp4;
+  if (source) {
+    const sources = [
+      media.webm ? `<source src="${escapeAttr(media.webm)}" type="video/webm">` : "",
+      media.mp4 ? `<source src="${escapeAttr(media.mp4)}" type="video/mp4">` : "",
+      media.original ? `<source src="${escapeAttr(media.original)}">` : ""
+    ].join("");
+    const poster = media.original ? ` poster="${escapeAttr(media.original)}"` : "";
+    const style = mediaStyle(media, options.backgroundPosition);
+    const fallback = media.original
+      ? `<img class="${escapeAttr(`${className} preview-media-fallback`)}" src="${escapeAttr(media.original)}" alt="${escapeAttr(alt)}">`
+      : "";
+    return `<video autoplay muted loop pip="false" playsinline preload="auto" x-webkit-airplay="allow" webkit-playsinline class="${escapeAttr(`${className} preview-media-video`)}"${poster}${style}>${sources}</video>${fallback}`;
+  }
+
+  if (media?.original) {
+    return `<img class="${escapeAttr(className)}" src="${escapeAttr(media.original)}" alt="${escapeAttr(alt)}">`;
+  }
+
+  return "";
+}
+
+function applyMediaFallback(element, media, backgroundPosition) {
+  if (!media?.original) {
+    element.removeAttribute("style");
+    return;
+  }
+
+  element.style.backgroundImage = `url("${escapeCssUrl(media.original)}")`;
+  element.style.backgroundSize = "cover";
+  element.style.backgroundPosition = backgroundPosition;
+}
+
+function mediaStyle(media, backgroundPosition = "center") {
+  if (!media?.original) return "";
+  const declarations = [
+    `background-image:url(&quot;${escapeAttr(escapeCssUrl(media.original))}&quot;)`,
+    "background-size:cover",
+    `background-position:${escapeAttr(backgroundPosition)}`,
+    "object-fit:cover"
+  ];
+  return ` style="${declarations.join(";")}"`;
+}
+
+function absoluteAssetUrl(href) {
+  return new URL(href, window.location.href).href;
+}
+
+function resizeFrame(frame) {
+  const doc = frame.contentDocument;
+  if (!doc) return;
+  const height = Math.max(
+    doc.documentElement.scrollHeight,
+    doc.body?.scrollHeight || 0,
+    window.innerHeight
+  );
+  frame.style.height = `${height}px`;
+}
+
+function hydrateFrameState(frame) {
+  const doc = frame.contentDocument;
+  if (!doc) return;
+
+  doc.querySelectorAll(".text-expander").forEach((expander) => {
+    const button = expander.querySelector(".text-expander__btn");
+    if (!button) return;
+    button.classList.add("text-expander__btn--hide");
+  });
+
+  doc.querySelectorAll("video.wallpaper-wrapper-media, video.client-bg__cover").forEach((video) => {
+    video.controls = false;
+    video.muted = true;
+    video.playsInline = true;
+    video.disablePictureInPicture = true;
+    const markReady = () => {
+      video.classList.toggle("preview-media-ready", video.readyState >= 2);
+    };
+    video.addEventListener("loadeddata", markReady, { once: true });
+    video.addEventListener("canplay", markReady, { once: true });
+    markReady();
+    const playback = video.play();
+    if (playback?.catch) playback.catch(() => {});
+  });
 }
 
 function escapeHtml(value) {
@@ -683,4 +618,12 @@ function escapeHtml(value) {
 
 function escapeAttr(value) {
   return escapeHtml(value);
+}
+
+function escapeCssUrl(value) {
+  return String(value ?? "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll('"', '\\"')
+    .replaceAll("\n", "")
+    .replaceAll("\r", "");
 }

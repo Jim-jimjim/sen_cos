@@ -9,9 +9,9 @@
       "badge": "https://mirai.senkuro.net/emojis/4/278_653809227ebc20c679b7150cff0a598b0553e498.webp",
       "cosmetics": {
         "wallpaper": {
-          "slug": "graffiti-phantom",
-          "title": "Граффити",
-          "original": "https://mirai.senkuro.net/collectibles/304/0a098674fd233211691b2529c74743e7b0b61c13.webp",
+          "slug": "rudo",
+          "title": "Рудо",
+          "original": "https://mirai.senkuro.net/collectibles/304/c16914756c79d0bcf96d073adeb350992028b518.webp",
           "webm": "https://mirai.senkuro.net/collectibles/304/22f4f7310fb01930b7db2917c140970e689f5ba4_1920.webm",
           "mp4": "https://mirai.senkuro.net/collectibles/304/aec80ae966b7c28547361e8b6a5c5fbd7c91ee60_1920.mp4",
           "kind": "video"
@@ -203,17 +203,17 @@
       "badge": "",
       "cosmetics": {
         "wallpaper": {
-          "slug": "imperator-wallpaper",
-          "title": "Императорские обои",
-          "original": "https://mirai.senkuro.net/collectibles/10/a32110bd50ac822e703e489e487c7989bebdc03c_1920.webm",
+          "slug": "kda-ahri",
+          "title": "KDA Архи",
+          "original": "https://mirai.senkuro.net/collectibles/10/68a260841dbe9e1a80f9b90f54edb661be558e2a.webp",
           "webm": "https://mirai.senkuro.net/collectibles/10/a32110bd50ac822e703e489e487c7989bebdc03c_1920.webm",
           "mp4": "https://mirai.senkuro.net/collectibles/10/c13961edd4b97ffe6927526e70d05fbf888a88e0_1920.mp4",
           "kind": "video"
         },
         "banner": {
-          "slug": "imperator-banner",
-          "title": "Баннер",
-          "original": "https://mirai.senkuro.net/collectibles/190/acbfa939f365265616cc406fcd0bb48c3682f118_1920.webm",
+          "slug": "inquisitive-klee",
+          "title": "Любознательная Кли",
+          "original": "https://mirai.senkuro.net/collectibles/190/b037446bdecccd3bb29ef33eb5df11f86798336e.webp",
           "webm": "https://mirai.senkuro.net/collectibles/190/acbfa939f365265616cc406fcd0bb48c3682f118_1920.webm",
           "mp4": "https://mirai.senkuro.net/collectibles/190/edb71d11bf741e8e2aa4517596f7916bad1f03a4_1920.mp4",
           "kind": "video"

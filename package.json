@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "python -m http.server 4173",
-    "fetch:collectibles": "node scripts/fetch-collectibles.mjs"
+    "fetch:collectibles": "node scripts/fetch-collectibles.mjs",
+    "fetch:profiles": "node scripts/fetch-profile-snapshots.mjs"
   }
 }
