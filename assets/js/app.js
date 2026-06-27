@@ -615,9 +615,16 @@ function resizeFrame(frame) {
 
   const doc = frame.contentDocument;
   if (!doc) return;
+  const contentBottom = [
+    doc.querySelector(".container--wallpaper"),
+    doc.querySelector(".client-body")
+  ]
+    .filter(Boolean)
+    .reduce((bottom, element) => {
+      return Math.max(bottom, element.getBoundingClientRect().bottom);
+    }, 0);
   const height = Math.max(
-    doc.documentElement.scrollHeight,
-    doc.body?.scrollHeight || 0,
+    Math.ceil(contentBottom + 96),
     window.innerHeight
   );
   frame.style.height = `${height}px`;
