@@ -441,7 +441,7 @@ function processSnapshot(snippet, profile) {
   applyHydratedSnapshotState(root);
   normalizeSnapshotAssets(root);
   hydrateCardVideos(root, profile);
-  hydrateLibraryCovers(root, profile);
+  removeHydratedPlaceholders(root);
 
   return root.innerHTML;
 }
@@ -506,45 +506,24 @@ function hydrateCardVideos(root, profile) {
   });
 }
 
+function removeHydratedPlaceholders(root) {
+  root.querySelectorAll(".collectible-card__blurhash").forEach((canvas) => {
+    canvas.remove();
+  });
+
+  root.querySelectorAll(".cover-wrapper__inner, .avatar-wrapper__img").forEach((wrapper) => {
+    if (!wrapper.querySelector("img, video")) return;
+    wrapper.querySelectorAll("canvas").forEach((canvas) => {
+      canvas.remove();
+    });
+  });
+}
+
 function cardTitleForVideo(video) {
   const card = video.closest(".collectible-card");
   const backAlt = card?.querySelector(".collectible-card__back")?.getAttribute("alt") || "";
   const match = backAlt.match(/^Рубашка карты\s+(.+)$/i);
   return match?.[1] || card?.querySelector("[alt]")?.getAttribute("alt") || "";
-}
-
-function hydrateLibraryCovers(root, profile) {
-  const items = profile.library?.items || [];
-  if (!items.length) return;
-
-  const library = Array.from(root.querySelectorAll(".client-body__item")).find((section) => {
-    return section.querySelector(".caption-top .caption")?.textContent.includes("Библиотека манги");
-  });
-  if (!library) return;
-
-  const used = new Set();
-  library.querySelectorAll(".card-main").forEach((card, index) => {
-    const wrapper = card.querySelector(".cover-wrapper__inner");
-    if (!wrapper || wrapper.querySelector("img")) return;
-
-    const title = card.querySelector(".card-title")?.getAttribute("title")
-      || card.querySelector(".card-title")?.textContent
-      || "";
-    const item = items.find((candidate, candidateIndex) => {
-      return !used.has(candidateIndex) && sameTitle(candidate.title, title);
-    }) || items.find((candidate, candidateIndex) => !used.has(candidateIndex) && candidateIndex === index);
-
-    if (!item?.cover) return;
-    used.add(items.indexOf(item));
-
-    const img = root.ownerDocument.createElement("img");
-    img.setAttribute("src", item.cover);
-    img.setAttribute("alt", item.title || title);
-    img.setAttribute("loading", "lazy");
-    img.setAttribute("decoding", "async");
-    img.setAttribute("class", "");
-    wrapper.append(img);
-  });
 }
 
 function sameTitle(left, right) {
@@ -709,6 +688,8 @@ function hydrateFrameState(frame) {
   });
 
   doc.querySelectorAll("video.wallpaper-wrapper-media, video.client-bg__cover, video.collectible-card__video").forEach((video) => {
+    if (video.dataset.previewHydrated === "true") return;
+    video.dataset.previewHydrated = "true";
     video.controls = false;
     video.muted = true;
     video.playsInline = true;

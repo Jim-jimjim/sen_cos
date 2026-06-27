@@ -91,15 +91,14 @@ select {
   padding: 0 16px;
   border: 1px solid rgb(241 241 241 / 16%);
   border-radius: 999px;
-  background: rgb(35 35 40 / 72%);
+  background: rgb(35 35 40 / 92%);
   color: #f1f1f1;
   cursor: pointer;
   box-shadow: 0 12px 38px rgb(0 0 0 / 35%);
-  backdrop-filter: blur(18px);
 }
 
 .preview-fab:hover {
-  background: rgb(48 48 54 / 82%);
+  background: rgb(48 48 54 / 96%);
 }
 
 .preview-fab__icon {
@@ -117,9 +116,8 @@ select {
   overflow: hidden;
   border: 1px solid rgb(241 241 241 / 14%);
   border-radius: 16px;
-  background: rgb(17 17 19 / 86%);
+  background: rgb(17 17 19 / 96%);
   box-shadow: 0 28px 90px rgb(0 0 0 / 52%);
-  backdrop-filter: blur(24px);
 }
 
 .preview-drawer__head,
@@ -187,6 +185,7 @@ select {
 select,
 input[type="url"],
 input[type="file"] {
+  color-scheme: dark;
   width: 100%;
   min-height: 38px;
   border: 1px solid rgb(241 241 241 / 12%);
@@ -194,6 +193,12 @@ input[type="file"] {
   background: rgb(241 241 241 / 8%);
   color: #f1f1f1;
   padding: 0 10px;
+}
+
+select option,
+select optgroup {
+  background: #202023;
+  color: #f1f1f1;
 }
 
 input[type="file"] {
