@@ -339,7 +339,7 @@ async function render() {
 
   app.className = "";
   app.innerHTML = `
-    <div class="preview-host">
+    <div class="preview-host is-${escapeAttr(state.device)}">
       <div class="preview-host__inner">
         <iframe
           id="profileFrame"
@@ -437,6 +437,8 @@ function processSnapshot(snippet, profile) {
   applyAvatar(root, profile);
   applyFrame(root);
   applyHydratedSnapshotState(root);
+  normalizeSnapshotAssets(root);
+  removeEmptyCardVideos(root);
 
   return root.innerHTML;
 }
@@ -444,6 +446,36 @@ function processSnapshot(snippet, profile) {
 function applyHydratedSnapshotState(root) {
   root.querySelectorAll(".text-expander__btn").forEach((button) => {
     button.classList.add("text-expander__btn--hide");
+  });
+}
+
+function normalizeSnapshotAssets(root) {
+  root.querySelectorAll("[src]").forEach((element) => {
+    const value = element.getAttribute("src");
+    if (value?.startsWith("/assets/")) {
+      element.setAttribute("src", localSenkuroAsset(value));
+    }
+  });
+
+  root.querySelectorAll("[srcset]").forEach((element) => {
+    const value = element.getAttribute("srcset");
+    if (!value) return;
+    element.setAttribute("srcset", value
+      .split(",")
+      .map((entry) => {
+        const [url, descriptor] = entry.trim().split(/\s+/, 2);
+        const nextUrl = url?.startsWith("/assets/") ? localSenkuroAsset(url) : url;
+        return [nextUrl, descriptor].filter(Boolean).join(" ");
+      })
+      .join(", "));
+  });
+}
+
+function removeEmptyCardVideos(root) {
+  root.querySelectorAll("video.collectible-card__video").forEach((video) => {
+    if (!video.getAttribute("src") && !video.querySelector("source")) {
+      video.remove();
+    }
   });
 }
 
@@ -570,7 +602,17 @@ function absoluteAssetUrl(href) {
   return new URL(href, window.location.href).href;
 }
 
+function localSenkuroAsset(pathname) {
+  const filename = pathname.replace(/^\/assets\//, "");
+  return absoluteAssetUrl(`assets/vendor/senkuro/${filename}`);
+}
+
 function resizeFrame(frame) {
+  if (frame.classList.contains("is-mobile")) {
+    frame.style.height = "";
+    return;
+  }
+
   const doc = frame.contentDocument;
   if (!doc) return;
   const height = Math.max(
@@ -597,7 +639,12 @@ function hydrateFrameState(frame) {
     video.playsInline = true;
     video.disablePictureInPicture = true;
     const markReady = () => {
-      video.classList.toggle("preview-media-ready", video.readyState >= 2);
+      const isReady = video.readyState >= 2;
+      video.classList.toggle("preview-media-ready", isReady);
+      if (isReady) {
+        const host = video.closest(".wallpaper-wrapper, .client-bg");
+        if (host) host.style.backgroundImage = "";
+      }
     };
     video.addEventListener("loadeddata", markReady, { once: true });
     video.addEventListener("canplay", markReady, { once: true });

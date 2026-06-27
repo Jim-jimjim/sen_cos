@@ -44,15 +44,19 @@ select {
   padding: 0 0 96px;
 }
 
+.preview-host.is-mobile {
+  padding-top: 24px;
+}
+
 .preview-host__inner {
   display: flex;
   justify-content: center;
-  min-width: min-content;
+  min-width: 100%;
 }
 
 .profile-frame {
   display: block;
-  width: 1440px;
+  width: max(1440px, 100vw);
   min-height: 100vh;
   border: 0;
   background: #111113;
@@ -60,6 +64,8 @@ select {
 
 .profile-frame.is-mobile {
   width: 390px;
+  height: clamp(640px, calc(100vh - 72px), 844px);
+  min-height: 0;
   box-shadow: 0 0 0 1px rgb(241 241 241 / 10%), 0 24px 80px rgb(0 0 0 / 44%);
 }
 
