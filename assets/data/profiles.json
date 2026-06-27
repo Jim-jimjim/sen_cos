@@ -245,6 +245,7 @@
           "grade": "F+",
           "rare": true,
           "video": "https://mirai.senkuro.net/cards/characters/1509949440065538/c8d8a93d2992ac053ab9286766cbddb91d3e2814_180.webm",
+          "videoMp4": "https://mirai.senkuro.net/cards/characters/1509949440065538/f5b3f1c642ef789cdda41f52572b70ff9019454a_180.mp4",
           "image": "https://mirai.senkuro.net/collectibles/272/22b9950d2f8def20fc74e1dbd05e211f87c4fee5.jpeg"
         },
         {
@@ -289,6 +290,16 @@
           { "label": "Брошено", "count": 18 },
           { "label": "Перечитываю", "count": 8 }
         ],
+        "coversBySlug": {
+          "troublesome-employee-warning": "https://shiro.senkuro.net/HgJJcZ7gCdhziiGHXNZKqaIWvpiYiNCeFJ9EAKYQd3U/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS8xNDE0MzU0NjIwMTQyMjM5MjMvY292ZXJzL2UzOGRiN2RkODFjYTRiOTRjMzRjOWIwYmU3MWJlMGFkNDJlZjRmYWRfMTQxNDM1NTA5MDU3NTM3NTg1LmpwZWc.jpeg",
+          "after-the-divorce-the-warrior-became-an-assistant-professor-at-the-academy": "https://shiro.senkuro.net/V71gjgQPBANC6E8WP7nRO2RFdJ6-vtz4ywmt11fyWOM/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS8xNDY1Mjg1NjM3MDM1OTY1NjUvY292ZXJzLzc4NDdlOGM5N2I3M2M4MDA1MWMwMDIyYTA2YjQyNjRiNDcwZmZjMmRfMTQ2NTI4NjgzMzc1NDc4Mjc2LmpwZWc.jpeg",
+          "all-about-that-game-life": "https://shiro.senkuro.net/J004ZbwZqV_lgq_m3NEJfgICQe-N8QQ0tA7LvnYv9tk/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS8xMzY1MjI2NTgzMjA3NjI0MDQvY292ZXJzLzE1ZDAxODdjMjYzZDBjYTRkOTBmZmIxMjRiY2JhZjBiNDNjMDBmYmFfMTM2NTg3MDE2NjEwNTMwODUyLmpwZWc.jpeg",
+          "under-one-roof": "https://shiro.senkuro.net/XXt6JRc4_2QTm2PJV2q3lSf2QWA6OQAYcrH9mcxK5QE/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS84NzMxOTExODI2MDIzMjYwMy9jb3ZlcnMvODg1M2E1ZDRmNGMxZjFlZmMyZWQ1YmI3ZmM0NTM3YjM4OWM5MmVmZV84NzMxOTQyNTcxOTQ5MzAxOS5qcGVn.jpeg",
+          "sexercise": "https://shiro.senkuro.net/wzGA5pYJwqbm_ZR2mIdZ-mIPWa3X-pnA1h1fsu_MNd0/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS84NDU0MDc0MzM1OTY4NDk5Ni9jb3ZlcnMvZGVlODE4YjcyNWJlNWUyNGJlYWY2NDIxNDc5ODVlN2Y4NDcyNTA3Nl84NDU0MTA0ODc1NTM0Nzg0NC5qcGVn.jpeg",
+          "a-sensitive-issue": "https://shiro.senkuro.net/a2xmJRuQMHuBoYVDPaz5oMRTHrB5xZL9h0e5_wfhirc/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS84NTAwODgzNjUxMDkwMDYzNi9jb3ZlcnMvMWNhNTFiODZlNjllYmE3ZjljNmFlOTc4ODg5YjIzZGI5YmNkY2Y0N184NTAxMDkwNzQ1Njg4OTI0NC5qcGVn.jpeg",
+          "short-stories-big-secrets": "https://shiro.senkuro.net/wyWq-2lQBxOXBARTCcRFUjS2U8zabtHzrnporZoeDs0/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS84NTg0Nzg2NTY1MzQ4NTk5OS9jb3ZlcnMvOTM3YzQ0OWNkMmQ4ZDhkODIwNzM3ZDNlMzkwN2FiYmQ1YmI5MzAzMV84NTg0Nzk5MjQyMjEzMDA5NS5qcGVn.jpeg",
+          "erma": "https://shiro.senkuro.net/yjbH4Ie7nP66iUNKJLnF9t1t5EmRo4E-a_wBoNedSlk/rs:fit:175:250/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9tYW5nYS8yMDIwMzk4ODgxNTYwNTA5NTcvY292ZXJzL2ZiODYzMTc3MTczNTZmNjdmYzEwYjI1OGU1MzRiMThkZDQ5ZWZiZTFfMjAyMDQwMDkxMDkzMjU1NzE2LmpwZWc.jpeg"
+        },
         "items": [
           {
             "title": "Беспредел в офисе",

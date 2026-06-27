@@ -185,7 +185,7 @@ function bindControls() {
     if (control.toggle) {
       control.toggle.addEventListener("change", () => {
         state.enabled[slot] = control.toggle.checked;
-        void render();
+        updateCurrentFrame(slot);
       });
     }
 
@@ -194,14 +194,14 @@ function bindControls() {
       if (!selected) return;
       state.cosmetics[slot] = mediaFromCatalog(selected, slot);
       control.url.value = "";
-      void render();
+      updateCurrentFrame(slot);
     });
 
     control.url.addEventListener("change", () => {
       const value = control.url.value.trim();
       if (!value) return;
       state.cosmetics[slot] = mediaFromUrl(value, slot, value);
-      void render();
+      updateCurrentFrame(slot);
     });
 
     control.file.addEventListener("change", () => {
@@ -217,7 +217,7 @@ function bindControls() {
         kind: file.type.startsWith("video/") ? "video" : "image",
         uploaded: true
       };
-      void render();
+      updateCurrentFrame(slot);
     });
   });
 
@@ -225,7 +225,7 @@ function bindControls() {
     releaseObjectUrls();
     applyProfileDefaults();
     syncControls();
-    void render();
+    updateCurrentFrame();
   });
 }
 
@@ -367,6 +367,25 @@ async function render() {
   });
 }
 
+function updateCurrentFrame(slot = null) {
+  const frame = document.querySelector("#profileFrame");
+  const doc = frame?.contentDocument;
+  const profile = activeProfile();
+
+  if (!frame || !doc || !profile) {
+    void render();
+    return;
+  }
+
+  if (!slot || slot === "wallpaper") applyWallpaper(doc);
+  if (!slot || slot === "banner") applyBanner(doc);
+  if (!slot || slot === "avatar") applyAvatar(doc, profile);
+  if (!slot || slot === "frame") applyFrame(doc);
+
+  removeHydratedPlaceholders(doc);
+  hydrateFrameState(frame);
+}
+
 async function loadProfileSnippet(profileId) {
   if (!snippetCache.has(profileId)) {
     const text = await fetchText(`${SNAPSHOT_DIR}/${profileId}.html`);
@@ -441,6 +460,7 @@ function processSnapshot(snippet, profile) {
   applyHydratedSnapshotState(root);
   normalizeSnapshotAssets(root);
   hydrateCardVideos(root, profile);
+  hydrateLibraryCovers(root, profile);
   removeHydratedPlaceholders(root);
 
   return root.innerHTML;
@@ -499,10 +519,12 @@ function hydrateCardVideos(root, profile) {
     video.setAttribute("x-webkit-airplay", "allow");
     if (card.image) video.setAttribute("poster", card.image);
 
-    const source = root.ownerDocument.createElement("source");
-    source.setAttribute("src", card.video);
-    source.setAttribute("type", sourceTypeForUrl(card.video));
-    video.append(source);
+    [card.video, card.videoMp4, card.mp4].filter(Boolean).forEach((url) => {
+      const source = root.ownerDocument.createElement("source");
+      source.setAttribute("src", url);
+      source.setAttribute("type", sourceTypeForUrl(url));
+      video.append(source);
+    });
   });
 }
 
@@ -517,6 +539,67 @@ function removeHydratedPlaceholders(root) {
       canvas.remove();
     });
   });
+}
+
+function hydrateLibraryCovers(root, profile) {
+  const coversBySlug = profile.library?.coversBySlug || {};
+  const items = profile.library?.items || [];
+  const hasCoverData = Object.keys(coversBySlug).length || items.some((item) => isMangaCover(item.cover));
+  if (!hasCoverData) return;
+
+  root.querySelectorAll(".client-body__item").forEach((section) => {
+    const caption = section.querySelector(".caption-top .caption")?.textContent || "";
+    if (!caption.includes("Библиотека манги")) return;
+
+    section.querySelectorAll(".card-main").forEach((card) => {
+      const wrapper = card.querySelector(".cover-wrapper__inner");
+      if (!wrapper) return;
+
+      const title = card.querySelector(".card-title")?.getAttribute("title")
+        || card.querySelector(".card-title")?.textContent
+        || "";
+      const slug = mangaSlugFromCard(card);
+      const item = items.find((candidate) => sameTitle(candidate.title, title));
+      const cover = coversBySlug[slug] || (isMangaCover(item?.cover) ? item.cover : null);
+      if (!cover) return;
+
+      let img = wrapper.querySelector("img");
+      if (!img) {
+        img = root.ownerDocument.createElement("img");
+        wrapper.append(img);
+      }
+
+      img.setAttribute("src", cover);
+      img.setAttribute("alt", title || item?.title || "Манга");
+      img.setAttribute("loading", "lazy");
+      img.setAttribute("decoding", "async");
+      img.setAttribute("class", "");
+    });
+  });
+}
+
+function mangaSlugFromCard(card) {
+  const href = card.closest("a[href*='/manga/']")?.getAttribute("href")
+    || card.querySelector("a[href*='/manga/']")?.getAttribute("href")
+    || "";
+  return href.match(/\/manga\/([^/]+)/)?.[1] || "";
+}
+
+function isMangaCover(url) {
+  const value = String(url || "");
+  if (value.includes("/manga/") && value.includes("/covers/")) return true;
+
+  const encoded = value.split("/").pop()?.replace(/\.\w+$/, "");
+  if (!encoded) return false;
+
+  try {
+    const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+    const decoded = atob(padded);
+    return decoded.includes("/manga/") && decoded.includes("/covers/");
+  } catch {
+    return false;
+  }
 }
 
 function cardTitleForVideo(video) {
