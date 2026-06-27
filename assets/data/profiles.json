@@ -1,0 +1,389 @@
+{
+  "profiles": [
+    {
+      "id": "phantom",
+      "name": "Phantom",
+      "level": 25,
+      "statusText": "Раскрыть полностью",
+      "verified": true,
+      "badge": "https://mirai.senkuro.net/emojis/4/278_653809227ebc20c679b7150cff0a598b0553e498.webp",
+      "cosmetics": {
+        "wallpaper": {
+          "slug": "graffiti-phantom",
+          "title": "Граффити",
+          "original": "https://mirai.senkuro.net/collectibles/304/0a098674fd233211691b2529c74743e7b0b61c13.webp",
+          "webm": "https://mirai.senkuro.net/collectibles/304/22f4f7310fb01930b7db2917c140970e689f5ba4_1920.webm",
+          "mp4": "https://mirai.senkuro.net/collectibles/304/aec80ae966b7c28547361e8b6a5c5fbd7c91ee60_1920.mp4",
+          "kind": "video"
+        },
+        "banner": null,
+        "avatar": {
+          "slug": "phantom-avatar",
+          "title": "Phantom",
+          "original": "https://mirai.senkuro.net/collectibles/25/57fcc7d754de62b32f9e614bf5d9282052ee224c.jpeg",
+          "kind": "image"
+        },
+        "frame": {
+          "slug": "phantom-frame",
+          "title": "avatar frame",
+          "original": "https://mirai.senkuro.net/collectibles/100/e4818da6a50dbf8707914ba75d77df784a35924f.webp",
+          "kind": "image"
+        }
+      },
+      "cards": [
+        {
+          "title": "Гу Юэна",
+          "subtitle": "Боевой континент 3",
+          "grade": "C",
+          "rare": true,
+          "image": "https://shiro.senkuro.net/q3UYpllgojpzNzIMvv7lkXwnyWHOr0dT7-ofh1jLdUg/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzUyNjY0NDM5MTY5Njc2MDIzLzMwODUwMzc4ZWY1ZWRmZTFlZDNkY2NjN2EzNzE2NmY1ODNhMjUzMTMud2VicA.webp"
+        },
+        {
+          "title": "Карусо Вителли",
+          "subtitle": "Сестра, в этой жизни я королева",
+          "grade": "C",
+          "rare": true,
+          "image": "https://shiro.senkuro.net/EUAhNofJri-8LSHOQQ9-XQJDPMtOhmcG3chBg29cJ9o/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE2NTQxODAyNjY1MTM3Mjc2Ni9iN2FkZTQwOWI2YmRhMzFmOTcyOGVhNzNkYmNjNDJkZWYyOTIyYTI0LndlYnA.webp"
+        },
+        {
+          "title": "Вис Ромбарди",
+          "subtitle": "Я стану хозяйкой этой жизни",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/cQ47J-V4IQ0NQPlSaiz5j7qeDO3ibtUvbhRs4L4Bk0o/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzY0MDEwMDk2NDAwNzIzNDc4L2JiNWMxZmM4NGU0NWM5OTU0NTlkMTdlYTIyNDJhODI0YjIzZDBhNTIud2VicA.webp"
+        },
+        {
+          "title": "Виктор Григорьевич",
+          "subtitle": "Боксер",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/QfWrV-8p6piDRpJ5NodYW89olSICVfPAB-yixjEweKI/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzU0NTkwNjE2Njc1Mjk0MDA4L2IyNGIxNDU4Y2MzNzU1ZjNiZTMxMjQwOTc5MzdhMDg0MmUwMzA5MWIud2VicA.webp"
+        },
+        {
+          "title": "Тайрон Де Элмир",
+          "subtitle": "Еще раз в свет",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/080zsROBdekUOhT7NKg0pSxSCC0w9oUx29XSDwEbCho/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzc2NDQ3MzYxMDc2ODgyOTY2L2MzZmE2ODM0NzI4MmYzZWE0Nzk1NzE3MWEzMjEyZjA3ZDkyZjBmYzYud2VicA.webp"
+        },
+        {
+          "title": "Мэ Хва",
+          "subtitle": "Возвращение легенды",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/H7Gl2NjP9UmqkNjkVR-WPxsU0HffszNSjDu4fL8ldfo/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE0NTc3NzY0MDA3NzkzNjE0OC83NjVjN2E2Y2JkY2Y4ZDYxZTFlOTFkYmU0Nzg2YWI0MTIxMDFmNzFkLndlYnA.webp"
+        }
+      ],
+      "achievements": {
+        "total": 65,
+        "items": [
+          "https://mirai.senkuro.net/achievements/112/covers/529ced2c6e18f5c9f26d42f09c588c9fe69c306a_224605596115027466.webp",
+          "https://mirai.senkuro.net/achievements/119/covers/8fbbd1e0a1e013b52e2c751f1919f8df3e0a0cc2_224892947764626954.webp",
+          "https://mirai.senkuro.net/achievements/117/covers/f50ea913ccd0b38f3d35437c0d32d086f7f53ff8_224748629263402506.webp",
+          "https://mirai.senkuro.net/achievements/113/covers/6b4a1cd2a9dadc382b4a6bd3a4ae7cfec7ff97fa_224605605325719050.webp",
+          "https://mirai.senkuro.net/achievements/115/covers/dfe2dd1989fdf084e0bab989eb8ec8bc98992d37_224605671528613386.webp",
+          "https://mirai.senkuro.net/achievements/120/covers/ba82eb435e469c85c7be91d6a9f9fadb97feea6d_224892985244927498.webp",
+          "https://mirai.senkuro.net/achievements/123/covers/e7436aae1de048e9c762f2bff1bd33f67635d420_224893052890662410.webp",
+          "https://mirai.senkuro.net/achievements/8/covers/2ca9e42095af192da5f4f19f287c7bfa4b1da112_204478168252302850.webp",
+          "https://mirai.senkuro.net/achievements/62/covers/bd334ec763b8cd6f1fcafefdf77428dd24d3a04e_219732537696601662.webp",
+          "https://mirai.senkuro.net/achievements/45/covers/6ea2cedff84f3e0a7cfaa23aa3f5ba2ee3673b69_216938832346498622.webp"
+        ]
+      },
+      "library": {
+        "total": 337,
+        "tabs": [
+          { "label": "В планах", "count": 128 },
+          { "label": "Читаю", "count": 104 },
+          { "label": "Прочитано", "count": 80 },
+          { "label": "Брошено", "count": 23 },
+          { "label": "Отложено", "count": 2 }
+        ],
+        "items": [
+          {
+            "title": "Я попал в мир неизвестной мне манги",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/q3UYpllgojpzNzIMvv7lkXwnyWHOr0dT7-ofh1jLdUg/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzUyNjY0NDM5MTY5Njc2MDIzLzMwODUwMzc4ZWY1ZWRmZTFlZDNkY2NjN2EzNzE2NmY1ODNhMjUzMTMud2VicA.webp"
+          },
+          {
+            "title": "Король демонов, побежденный героями",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/EUAhNofJri-8LSHOQQ9-XQJDPMtOhmcG3chBg29cJ9o/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE2NTQxODAyNjY1MTM3Mjc2Ni9iN2FkZTQwOWI2YmRhMzFmOTcyOGVhNzNkYmNjNDJkZWYyOTIyYTI0LndlYnA.webp"
+          },
+          {
+            "title": "Выбери меня!",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/QfWrV-8p6piDRpJ5NodYW89olSICVfPAB-yixjEweKI/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzU0NTkwNjE2Njc1Mjk0MDA4L2IyNGIxNDU4Y2MzNzU1ZjNiZTMxMjQwOTc5MzdhMDg0MmUwMzA5MWIud2VicA.webp"
+          },
+          {
+            "title": "Заткнись, дракон, я больше не хочу воспитывать детей с тобой",
+            "type": "Маньхуа",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/H7Gl2NjP9UmqkNjkVR-WPxsU0HffszNSjDu4fL8ldfo/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE0NTc3NzY0MDA3NzkzNjE0OC83NjVjN2E2Y2JkY2Y4ZDYxZTFlOTFkYmU0Nzg2YWI0MTIxMDFmNzFkLndlYnA.webp"
+          },
+          {
+            "title": "Реинкарнация архимага из команды героев",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/31jgKMvVr5hjHZ4YTS7fphas8qf8YUQnMFVjrMZZY5k/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzIyODc2MzQyMTMxMzYxNTQxNC8zODZjZjkyYWNmY2EwNDEyZDMzN2UzYTIyNTZjYmQ5MmZmZGFhZGMyLndlYnA.webp"
+          },
+          {
+            "title": "Ванпанчмен",
+            "type": "Манга",
+            "status": "Читаю · 123гл",
+            "cover": "https://shiro.senkuro.net/cQ47J-V4IQ0NQPlSaiz5j7qeDO3ibtUvbhRs4L4Bk0o/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzY0MDEwMDk2NDAwNzIzNDc4L2JiNWMxZmM4NGU0NWM5OTU0NTlkMTdlYTIyNDJhODI0YjIzZDBhNTIud2VicA.webp"
+          }
+        ]
+      },
+      "history": [
+        {
+          "time": "8 часов назад",
+          "title": "Я попал в мир неизвестной мне манги",
+          "meta": "Прочитаны главы : 29",
+          "cover": "https://shiro.senkuro.net/q3UYpllgojpzNzIMvv7lkXwnyWHOr0dT7-ofh1jLdUg/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzUyNjY0NDM5MTY5Njc2MDIzLzMwODUwMzc4ZWY1ZWRmZTFlZDNkY2NjN2EzNzE2NmY1ODNhMjUzMTMud2VicA.webp"
+        },
+        {
+          "time": "позавчера",
+          "title": "Король демонов, побежденный героями",
+          "meta": "Прочитаны главы : 34-35",
+          "cover": "https://shiro.senkuro.net/EUAhNofJri-8LSHOQQ9-XQJDPMtOhmcG3chBg29cJ9o/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE2NTQxODAyNjY1MTM3Mjc2Ni9iN2FkZTQwOWI2YmRhMzFmOTcyOGVhNzNkYmNjNDJkZWYyOTIyYTI0LndlYnA.webp"
+        }
+      ],
+      "about": {
+        "description": "",
+        "birthday": "17 марта",
+        "gender": "Мужской ♂",
+        "links": "Лисы"
+      },
+      "guild": {
+        "name": "Сенкурианство",
+        "level": 8,
+        "avatar": "https://mirai.senkuro.net/guilds/42/avatars/c0a0e8cf506947c5d23a450444bc1d45ffd3ca12_224446251167401482.jpeg"
+      },
+      "stats": {
+        "rank": "Лучше, чем 17.3% пользователей\nРанг: #78 038",
+        "items": [
+          { "value": "3 777", "label": "Глав прочитал(а)", "tone": "warning" },
+          { "value": "25", "label": "Серий просмотрел(а)", "tone": "accent" },
+          { "value": "18", "label": "Тайтлов оценил(а)", "tone": "error" }
+        ]
+      },
+      "friends": {
+        "count": 24,
+        "items": [
+          { "name": "Dark eyes", "avatar": "https://mirai.senkuro.net/users/119934911581799954/avatars/65c0f14fabef25ef88a9df78c49585ca6ec8fc5b_119935188254869010.jpeg" },
+          { "name": "VynoX", "avatar": "https://mirai.senkuro.net/collectibles/227/dd28c9ba9d3619aac2c19df0cdf43d188814e37b.webp" },
+          { "name": "Qwazic", "avatar": "https://mirai.senkuro.net/collectibles/231/8d41e6e3200220746bb37d15a0583875164a7ae3.webp" },
+          { "name": "Senkuro Sama", "avatar": "https://mirai.senkuro.net/users/192122277217715718/avatars/01e04bf7094354bc867b60ed0c786b2692b0ca53_200697953675920932.jpeg" }
+        ]
+      },
+      "following": {
+        "count": 4,
+        "items": [
+          { "name": "Ленивый перевод", "avatar": "https://mirai.senkuro.net/teams/35471002267836827/avatars/7decc9f175153d328254e6705fd62eb1372a4464_78008767177843088.jpeg" },
+          { "name": "Токсики", "avatar": "https://mirai.senkuro.net/teams/36596323461390764/avatars/1a8e22743d918519ce262f6c030a910e8a9b6293_36598742685606316.jpeg" }
+        ]
+      },
+      "teams": [
+        { "name": "Адепты Senkuro", "role": "Редактор", "avatar": "https://mirai.senkuro.net/teams/35471002267836827/avatars/7decc9f175153d328254e6705fd62eb1372a4464_78008767177843088.jpeg" },
+        { "name": "Токсики", "role": "Переводчик", "avatar": "https://mirai.senkuro.net/teams/36596323461390764/avatars/1a8e22743d918519ce262f6c030a910e8a9b6293_36598742685606316.jpeg" }
+      ],
+      "relationships": {
+        "title": "Гарем",
+        "items": [
+          { "name": "Сенкуро", "role": "Вайфу", "image": "https://mirai.senkuro.net/collectibles/272/22b9950d2f8def20fc74e1dbd05e211f87c4fee5.jpeg" },
+          { "name": "Ёру", "role": "Вайфу", "image": "https://mirai.senkuro.net/collectibles/231/8d41e6e3200220746bb37d15a0583875164a7ae3.webp" }
+        ]
+      }
+    },
+    {
+      "id": "imperator",
+      "name": "Император | Legion",
+      "level": 26,
+      "statusText": "\"Люблю манхву. мангу. донхуа.",
+      "verified": false,
+      "badge": "",
+      "cosmetics": {
+        "wallpaper": {
+          "slug": "imperator-wallpaper",
+          "title": "Императорские обои",
+          "original": "https://mirai.senkuro.net/collectibles/10/a32110bd50ac822e703e489e487c7989bebdc03c_1920.webm",
+          "webm": "https://mirai.senkuro.net/collectibles/10/a32110bd50ac822e703e489e487c7989bebdc03c_1920.webm",
+          "mp4": "https://mirai.senkuro.net/collectibles/10/c13961edd4b97ffe6927526e70d05fbf888a88e0_1920.mp4",
+          "kind": "video"
+        },
+        "banner": {
+          "slug": "imperator-banner",
+          "title": "Баннер",
+          "original": "https://mirai.senkuro.net/collectibles/190/acbfa939f365265616cc406fcd0bb48c3682f118_1920.webm",
+          "webm": "https://mirai.senkuro.net/collectibles/190/acbfa939f365265616cc406fcd0bb48c3682f118_1920.webm",
+          "mp4": "https://mirai.senkuro.net/collectibles/190/edb71d11bf741e8e2aa4517596f7916bad1f03a4_1920.mp4",
+          "kind": "video"
+        },
+        "avatar": {
+          "slug": "imperator-avatar",
+          "title": "Император",
+          "original": "https://mirai.senkuro.net/collectibles/228/d9063d41879066f69066b7e3912d97b8df78384f.webp",
+          "kind": "image"
+        },
+        "frame": {
+          "slug": "imperator-frame",
+          "title": "avatar frame",
+          "original": "https://mirai.senkuro.net/collectibles/63/ecddf7698fea4f58002c38a1142abcef2540342d.webp",
+          "kind": "image"
+        }
+      },
+      "cards": [
+        {
+          "title": "Джахен",
+          "subtitle": "Звезда возвращается",
+          "grade": "B",
+          "rare": true,
+          "image": "https://shiro.senkuro.net/LHHgdsKtU99rOLlepLcbsrpiUMKKBVVYiP85d-KNw7Q/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzExNzExNTUxMzU4NjMyMjAxOC81MzllODIwYzFjYzdmMDE5MjRlMTIyNTIxODVkZmFjMzQ4Yjk3ODNhLndlYnA.webp"
+        },
+        {
+          "title": "Сенкуро",
+          "subtitle": "Приключение богини Сенкуро",
+          "grade": "F+",
+          "rare": true,
+          "video": "https://mirai.senkuro.net/cards/characters/1509949440065538/c8d8a93d2992ac053ab9286766cbddb91d3e2814_180.webm",
+          "image": "https://mirai.senkuro.net/collectibles/272/22b9950d2f8def20fc74e1dbd05e211f87c4fee5.jpeg"
+        },
+        {
+          "title": "Ким Хен Сон",
+          "subtitle": "Возвращение",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/pPWEkDwYOnRFnfiOKMmBfwQOSOiVI1a33HpKP3EpVuY/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzY0MDA5ODExODQyMzYyOTAyLzliZjIwNWNmM2U4MTc4NDk4NjQ4N2IzNjY0OGJjM2YwZTMwZTViYWQud2VicA.webp"
+        },
+        {
+          "title": "Чу Дал Дал",
+          "subtitle": "Красная ночь",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/oWhADLgoULAaksXVoAMkec19n7yFcVeg--uS3IntHz0/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzQ2NzkwMTY0MTQ3NjIyMDM4LzM2ZDUwZTUwMjE2YzJlOGU1YjljODg0OTNiNzU4YjExMGMwYTQ4Njcud2VicA.webp"
+        },
+        {
+          "title": "Лаув Вульф",
+          "subtitle": "Сердце волка",
+          "grade": "F",
+          "image": "https://shiro.senkuro.net/QBfInKzgbJise_EWxlwC0-Gz4kbbSEZmlQEYoufIxJI/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE0NTc3NzcyMjcwNTQ2MjgwNC9lZjQ1YzlhOTdjNWVjZGM2OGIyMTEwMmI1Y2U3YjFlYjhlZGZiNzEzLndlYnA.webp"
+        }
+      ],
+      "achievements": {
+        "total": 79,
+        "items": [
+          "https://mirai.senkuro.net/achievements/116/covers/d50765ff1363aa3fa9abda1ff96b2cffecea24b1_224748608660981258.webp",
+          "https://mirai.senkuro.net/achievements/32/covers/05e3a9099e4ff83544c408a9a4e006b9ebfff79f_218666706430608958.webp",
+          "https://mirai.senkuro.net/achievements/50/covers/d1e79a817870b936d7d9b9eb112283c0c62890b8_218883203182642750.webp",
+          "https://mirai.senkuro.net/achievements/49/covers/704bb3662203798b65f93697f0f6aa585626e36b_218883152280569406.webp",
+          "https://mirai.senkuro.net/achievements/114/covers/b4baebf4ad3868eaa7803704ae3f4cb3b62d9cdd_224605660824749578.webp",
+          "https://mirai.senkuro.net/achievements/112/covers/529ced2c6e18f5c9f26d42f09c588c9fe69c306a_224605596115027466.webp",
+          "https://mirai.senkuro.net/achievements/113/covers/b46c64ab27fdfc343c5e81a7d9d241e7dd7d2d49_224605626917996042.webp",
+          "https://mirai.senkuro.net/achievements/109/covers/690c06d7512c0c0ac4416fb90a2cd169de251102_224399545075779097.webp",
+          "https://mirai.senkuro.net/achievements/118/covers/f61c7a4589380c89dc65695caa8c93e86d5c3735_224748692899382794.webp"
+        ]
+      },
+      "library": {
+        "total": 740,
+        "tabs": [
+          { "label": "Читаю", "count": 351 },
+          { "label": "Прочитано", "count": 216 },
+          { "label": "В планах", "count": 147 },
+          { "label": "Брошено", "count": 18 },
+          { "label": "Перечитываю", "count": 8 }
+        ],
+        "items": [
+          {
+            "title": "Беспредел в офисе",
+            "type": "Манхва",
+            "status": "В планах",
+            "cover": "https://shiro.senkuro.net/LHHgdsKtU99rOLlepLcbsrpiUMKKBVVYiP85d-KNw7Q/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzExNzExNTUxMzU4NjMyMjAxOC81MzllODIwYzFjYzdmMDE5MjRlMTIyNTIxODVkZmFjMzQ4Yjk3ODNhLndlYnA.webp"
+          },
+          {
+            "title": "Герой после развода стал ассистентом профессора в академии",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/pPWEkDwYOnRFnfiOKMmBfwQOSOiVI1a33HpKP3EpVuY/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzY0MDA5ODExODQyMzYyOTAyLzliZjIwNWNmM2U4MTc4NDk4NjQ4N2IzNjY0OGJjM2YwZTMwZTViYWQud2VicA.webp"
+          },
+          {
+            "title": "Все о этой жизни геймера.",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/oWhADLgoULAaksXVoAMkec19n7yFcVeg--uS3IntHz0/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzQ2NzkwMTY0MTQ3NjIyMDM4LzM2ZDUwZTUwMjE2YzJlOGU1YjljODg0OTNiNzU4YjExMGMwYTQ4Njcud2VicA.webp"
+          },
+          {
+            "title": "Под одной крышей",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/QBfInKzgbJise_EWxlwC0-Gz4kbbSEZmlQEYoufIxJI/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzE0NTc3NzcyMjcwNTQ2MjgwNC9lZjQ1YzlhOTdjNWVjZGM2OGIyMTEwMmI1Y2U3YjFlYjhlZGZiNzEzLndlYnA.webp"
+          },
+          {
+            "title": "Занятия с сексом",
+            "type": "Манхва",
+            "status": "",
+            "cover": "https://shiro.senkuro.net/5ljSYDPtYto3jEg9ni6hmzDPFbIdnluk7koYLZd0Z8Y/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzEwMzA5MTkyMjYwMzYwODY3NC84NjZkMDIzYjljMjI2ZTEzYWZjMDdiMGRhYTMwODYzMWYwZTNjODIzLndlYnA.webp"
+          }
+        ]
+      },
+      "history": [
+        {
+          "time": "20 минут назад",
+          "title": "Старик, перевоплотившийся в кота",
+          "meta": "Прочитаны главы : 21-22, 24-26, 28-30",
+          "cover": "https://shiro.senkuro.net/LHHgdsKtU99rOLlepLcbsrpiUMKKBVVYiP85d-KNw7Q/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzExNzExNTUxMzU4NjMyMjAxOC81MzllODIwYzFjYzdmMDE5MjRlMTIyNTIxODVkZmFjMzQ4Yjk3ODNhLndlYnA.webp"
+        },
+        {
+          "time": "сегодня",
+          "title": "Беспредел в офисе",
+          "meta": "Добавлено в планы",
+          "cover": "https://shiro.senkuro.net/pPWEkDwYOnRFnfiOKMmBfwQOSOiVI1a33HpKP3EpVuY/rs:fit:180:270/aHR0cHM6Ly9taXJhaS5zZW5rdXJvLm5ldC9jYXJkcy9jaGFyYWN0ZXJzLzY0MDA5ODExODQyMzYyOTAyLzliZjIwNWNmM2U4MTc4NDk4NjQ4N2IzNjY0OGJjM2YwZTMwZTViYWQud2VicA.webp"
+        }
+      ],
+      "about": {
+        "description": "\"Люблю манхву. мангу. донхуа.",
+        "birthday": "05 марта",
+        "gender": "Мужской ♂",
+        "links": "Legion"
+      },
+      "guild": {
+        "name": "Легион Смерти",
+        "level": 12,
+        "avatar": "https://mirai.senkuro.net/guilds/42/avatars/c0a0e8cf506947c5d23a450444bc1d45ffd3ca12_224446251167401482.jpeg"
+      },
+      "stats": {
+        "rank": "Лучше, чем 91.4% пользователей\nРанг: #2 140",
+        "items": [
+          { "value": "194 837", "label": "Глав прочитал(а)", "tone": "warning" },
+          { "value": "15 573", "label": "Серий просмотрел(а)", "tone": "accent" },
+          { "value": "1 580", "label": "Тайтлов оценил(а)", "tone": "error" }
+        ]
+      },
+      "friends": {
+        "count": 102,
+        "items": [
+          { "name": "Работник подвала", "avatar": "https://mirai.senkuro.net/collectibles/272/22b9950d2f8def20fc74e1dbd05e211f87c4fee5.jpeg" },
+          { "name": "Raf5daed", "avatar": "https://mirai.senkuro.net/collectibles/216/55aa5957d4ba3d5e8b2b33f2807c31d4b1e14667.webp" },
+          { "name": "Mozhet", "avatar": "https://mirai.senkuro.net/users/140351932849014323/avatars/06d993ed991a464f0be3bc55b9b2786fd5bbd480_233590504271398409.jpeg" },
+          { "name": "FoxDertSix", "avatar": "https://mirai.senkuro.net/teams/63686278431924649/avatars/15defb6ecc189af78c8bd680934fe08c5e642b6f_229744251452278292.jpeg" },
+          { "name": "Ночной Филин", "avatar": "https://mirai.senkuro.net/teams/59246739718168989/avatars/343096efaa9788d8536fe0ec86bed5b15f47251c_79797472628597141.jpeg" },
+          { "name": "Newest", "avatar": "https://mirai.senkuro.net/teams/56311784402870678/avatars/de432f437892263452690692613fb3e73d92149f_56328177470955926.jpeg" }
+        ]
+      },
+      "following": {
+        "count": 11,
+        "items": [
+          { "name": "FoxDertSix", "avatar": "https://mirai.senkuro.net/teams/63686278431924649/avatars/15defb6ecc189af78c8bd680934fe08c5e642b6f_229744251452278292.jpeg" },
+          { "name": "Ночной Филин", "avatar": "https://mirai.senkuro.net/teams/59246739718168989/avatars/343096efaa9788d8536fe0ec86bed5b15f47251c_79797472628597141.jpeg" },
+          { "name": "Newest", "avatar": "https://mirai.senkuro.net/teams/56311784402870678/avatars/de432f437892263452690692613fb3e73d92149f_56328177470955926.jpeg" }
+        ]
+      },
+      "teams": [
+        { "name": "Legion", "role": "Основатель", "avatar": "https://mirai.senkuro.net/guilds/42/avatars/c0a0e8cf506947c5d23a450444bc1d45ffd3ca12_224446251167401482.jpeg" },
+        { "name": "Ночной Филин", "role": "Редактор", "avatar": "https://mirai.senkuro.net/teams/59246739718168989/avatars/343096efaa9788d8536fe0ec86bed5b15f47251c_79797472628597141.jpeg" }
+      ],
+      "relationships": {
+        "title": "Отношения",
+        "items": [
+          { "name": "Ча Хэ Ин", "role": "Вайфу", "image": "https://mirai.senkuro.net/collectibles/228/d9063d41879066f69066b7e3912d97b8df78384f.webp" }
+        ]
+      }
+    }
+  ]
+}

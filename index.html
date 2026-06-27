@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Senkuro Profile Cosmetics Preview</title>
+    <link rel="stylesheet" href="./assets/css/senkuro-profile.css">
+  </head>
+  <body>
+    <div id="app" class="app-loading">Загрузка...</div>
+
+    <button class="preview-fab" id="previewToggle" type="button" aria-expanded="false" aria-controls="previewDrawer">
+      <span class="preview-fab__icon">⚙</span>
+      <span>Превью</span>
+    </button>
+
+    <aside class="preview-drawer" id="previewDrawer" aria-label="Настройки превью" hidden>
+      <div class="preview-drawer__head">
+        <h2>Настройки</h2>
+        <button class="icon-btn" id="previewClose" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <div class="preview-drawer__body">
+        <label class="field">
+          <span>Профиль</span>
+          <select id="profileSelect"></select>
+        </label>
+
+        <div class="field">
+          <span>Версия</span>
+          <div class="segmented" role="group" aria-label="Версия профиля">
+            <button class="segmented__btn is-active" type="button" data-device="desktop">ПК</button>
+            <button class="segmented__btn" type="button" data-device="mobile">Мобайл</button>
+          </div>
+        </div>
+
+        <div class="switch-row">
+          <label><input id="wallpaperToggle" type="checkbox" checked> Обои</label>
+          <label><input id="bannerToggle" type="checkbox" checked> Баннер</label>
+          <label><input id="frameToggle" type="checkbox" checked> Рамка</label>
+        </div>
+
+        <section class="control-group" data-slot="wallpaper">
+          <h3>Обои</h3>
+          <select id="wallpaperSelect"></select>
+          <input id="wallpaperUrl" type="url" placeholder="URL изображения или видео">
+          <input id="wallpaperFile" type="file" accept="image/*,video/*">
+        </section>
+
+        <section class="control-group" data-slot="banner">
+          <h3>Баннер</h3>
+          <select id="bannerSelect"></select>
+          <input id="bannerUrl" type="url" placeholder="URL изображения или видео">
+          <input id="bannerFile" type="file" accept="image/*,video/*">
+        </section>
+
+        <section class="control-group" data-slot="avatar">
+          <h3>Аватар</h3>
+          <select id="avatarSelect"></select>
+          <input id="avatarUrl" type="url" placeholder="URL изображения">
+          <input id="avatarFile" type="file" accept="image/*">
+        </section>
+
+        <section class="control-group" data-slot="frame">
+          <h3>Рамка</h3>
+          <select id="frameSelect"></select>
+          <input id="frameUrl" type="url" placeholder="URL изображения">
+          <input id="frameFile" type="file" accept="image/*">
+        </section>
+      </div>
+      <div class="preview-drawer__foot">
+        <button class="button button--secondary" id="resetButton" type="button">Сбросить</button>
+      </div>
+    </aside>
+
+    <script src="./assets/js/app.js" type="module"></script>
+  </body>
+</html>
