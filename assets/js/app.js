@@ -403,7 +403,8 @@ function buildFrameDocument(profile, snippet) {
     .wrapper { min-height: 100vh; }
     a { cursor: default; pointer-events: none; }
     video.wallpaper-wrapper-media,
-    video.client-bg__cover { pointer-events: none; }
+    video.client-bg__cover,
+    video.collectible-card__video { pointer-events: none; }
     .client-bg .preview-media-fallback {
       position: absolute;
       inset: 0;
@@ -415,7 +416,8 @@ function buildFrameDocument(profile, snippet) {
       display: none;
     }
     video.wallpaper-wrapper-media::-webkit-media-controls,
-    video.client-bg__cover::-webkit-media-controls {
+    video.client-bg__cover::-webkit-media-controls,
+    video.collectible-card__video::-webkit-media-controls {
       display: none !important;
       opacity: 0 !important;
     }
@@ -438,7 +440,8 @@ function processSnapshot(snippet, profile) {
   applyFrame(root);
   applyHydratedSnapshotState(root);
   normalizeSnapshotAssets(root);
-  removeEmptyCardVideos(root);
+  hydrateCardVideos(root, profile);
+  hydrateLibraryCovers(root, profile);
 
   return root.innerHTML;
 }
@@ -471,12 +474,96 @@ function normalizeSnapshotAssets(root) {
   });
 }
 
-function removeEmptyCardVideos(root) {
+function hydrateCardVideos(root, profile) {
+  const cardVideos = (profile.cards || []).filter((card) => card.video);
+  let fallbackIndex = 0;
+
   root.querySelectorAll("video.collectible-card__video").forEach((video) => {
-    if (!video.getAttribute("src") && !video.querySelector("source")) {
+    if (video.getAttribute("src") || video.querySelector("source")) return;
+
+    const title = cardTitleForVideo(video);
+    const card = cardVideos.find((item) => sameTitle(item.title, title))
+      || cardVideos[fallbackIndex++];
+
+    if (!card?.video) {
       video.remove();
+      return;
     }
+
+    video.setAttribute("autoplay", "");
+    video.setAttribute("muted", "");
+    video.setAttribute("loop", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("preload", "auto");
+    video.setAttribute("x-webkit-airplay", "allow");
+    if (card.image) video.setAttribute("poster", card.image);
+
+    const source = root.ownerDocument.createElement("source");
+    source.setAttribute("src", card.video);
+    source.setAttribute("type", sourceTypeForUrl(card.video));
+    video.append(source);
   });
+}
+
+function cardTitleForVideo(video) {
+  const card = video.closest(".collectible-card");
+  const backAlt = card?.querySelector(".collectible-card__back")?.getAttribute("alt") || "";
+  const match = backAlt.match(/^Рубашка карты\s+(.+)$/i);
+  return match?.[1] || card?.querySelector("[alt]")?.getAttribute("alt") || "";
+}
+
+function hydrateLibraryCovers(root, profile) {
+  const items = profile.library?.items || [];
+  if (!items.length) return;
+
+  const library = Array.from(root.querySelectorAll(".client-body__item")).find((section) => {
+    return section.querySelector(".caption-top .caption")?.textContent.includes("Библиотека манги");
+  });
+  if (!library) return;
+
+  const used = new Set();
+  library.querySelectorAll(".card-main").forEach((card, index) => {
+    const wrapper = card.querySelector(".cover-wrapper__inner");
+    if (!wrapper || wrapper.querySelector("img")) return;
+
+    const title = card.querySelector(".card-title")?.getAttribute("title")
+      || card.querySelector(".card-title")?.textContent
+      || "";
+    const item = items.find((candidate, candidateIndex) => {
+      return !used.has(candidateIndex) && sameTitle(candidate.title, title);
+    }) || items.find((candidate, candidateIndex) => !used.has(candidateIndex) && candidateIndex === index);
+
+    if (!item?.cover) return;
+    used.add(items.indexOf(item));
+
+    const img = root.ownerDocument.createElement("img");
+    img.setAttribute("src", item.cover);
+    img.setAttribute("alt", item.title || title);
+    img.setAttribute("loading", "lazy");
+    img.setAttribute("decoding", "async");
+    img.setAttribute("class", "");
+    wrapper.append(img);
+  });
+}
+
+function sameTitle(left, right) {
+  return normalizeTitle(left) === normalizeTitle(right);
+}
+
+function normalizeTitle(value) {
+  return String(value || "")
+    .toLocaleLowerCase("ru")
+    .replaceAll("ё", "е")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sourceTypeForUrl(url) {
+  const clean = String(url || "").split("?")[0].toLowerCase();
+  if (clean.endsWith(".mp4")) return "video/mp4";
+  if (clean.endsWith(".webm")) return "video/webm";
+  return "video/mp4";
 }
 
 function applyWallpaper(root) {
@@ -554,11 +641,11 @@ function applyFrame(root) {
 }
 
 function renderMedia(media, className, alt, options = {}) {
-  const source = media?.webm || media?.mp4;
+  const source = media?.mp4 || media?.webm;
   if (source) {
     const sources = [
-      media.webm ? `<source src="${escapeAttr(media.webm)}" type="video/webm">` : "",
       media.mp4 ? `<source src="${escapeAttr(media.mp4)}" type="video/mp4">` : "",
+      media.webm ? `<source src="${escapeAttr(media.webm)}" type="video/webm">` : "",
       media.original ? `<source src="${escapeAttr(media.original)}">` : ""
     ].join("");
     const poster = media.original ? ` poster="${escapeAttr(media.original)}"` : "";
@@ -608,26 +695,7 @@ function localSenkuroAsset(pathname) {
 }
 
 function resizeFrame(frame) {
-  if (frame.classList.contains("is-mobile")) {
-    frame.style.height = "";
-    return;
-  }
-
-  const doc = frame.contentDocument;
-  if (!doc) return;
-  const contentBottom = [
-    doc.querySelector(".container--wallpaper"),
-    doc.querySelector(".client-body")
-  ]
-    .filter(Boolean)
-    .reduce((bottom, element) => {
-      return Math.max(bottom, element.getBoundingClientRect().bottom);
-    }, 0);
-  const height = Math.max(
-    Math.ceil(contentBottom + 96),
-    window.innerHeight
-  );
-  frame.style.height = `${height}px`;
+  frame.style.height = "";
 }
 
 function hydrateFrameState(frame) {
@@ -640,7 +708,7 @@ function hydrateFrameState(frame) {
     button.classList.add("text-expander__btn--hide");
   });
 
-  doc.querySelectorAll("video.wallpaper-wrapper-media, video.client-bg__cover").forEach((video) => {
+  doc.querySelectorAll("video.wallpaper-wrapper-media, video.client-bg__cover, video.collectible-card__video").forEach((video) => {
     video.controls = false;
     video.muted = true;
     video.playsInline = true;

@@ -19,9 +19,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgb(81 119 255 / 12%), transparent 28rem),
-    #111113;
+  background: #111113;
   color: #f1f1f1;
 }
 
@@ -39,25 +37,37 @@ select {
 }
 
 .preview-host {
+  height: 100vh;
   min-height: 100vh;
   overflow-x: auto;
-  padding: 0 0 96px;
+  overflow-y: hidden;
+  padding: 0;
 }
 
 .preview-host.is-mobile {
+  height: auto;
+  overflow: auto;
   padding-top: 24px;
+  padding-bottom: 96px;
 }
 
 .preview-host__inner {
   display: flex;
+  min-height: 100vh;
   justify-content: center;
   min-width: 100%;
 }
 
+.preview-host.is-mobile .preview-host__inner {
+  min-height: 0;
+}
+
 .profile-frame {
+  flex: none;
   display: block;
   width: max(1440px, 100vw);
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
   border: 0;
   background: #111113;
 }
