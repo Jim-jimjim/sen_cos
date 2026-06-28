@@ -426,6 +426,29 @@ function buildFrameDocument(profile, snippet) {
     video.wallpaper-wrapper-media,
     video.client-bg__cover,
     video.collectible-card__video { pointer-events: none; }
+    .wallpaper-wrapper-media {
+      backface-visibility: hidden;
+      transform: translate3d(-50%, 0, 0);
+    }
+    .client-bg__cover,
+    .collectible-card__video {
+      backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+    .avatar-frame {
+      backface-visibility: hidden;
+      contain: paint;
+      transform: translate3d(-50%, -50%, 0);
+    }
+    .avatar-frame img {
+      backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+    .client .wallpaper-wrapper,
+    .client-bg,
+    .collectible-card {
+      contain: paint;
+    }
     .collectible-card__blurhash { display: none !important; }
     .client-bg .preview-media-fallback {
       position: absolute;
@@ -519,7 +542,7 @@ function hydrateCardVideos(root, profile) {
     video.setAttribute("loop", "");
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("preload", "auto");
+    video.setAttribute("preload", "metadata");
     video.setAttribute("x-webkit-airplay", "allow");
     if (card.image) video.setAttribute("poster", card.image);
 
@@ -708,11 +731,11 @@ function applyFrame(root) {
 }
 
 function renderMedia(media, className, alt, options = {}) {
-  const source = media?.mp4 || media?.webm;
+  const source = media?.webm || media?.mp4;
   if (source) {
     const sources = [
-      media.mp4 ? `<source src="${escapeAttr(media.mp4)}" type="video/mp4">` : "",
       media.webm ? `<source src="${escapeAttr(media.webm)}" type="video/webm">` : "",
+      media.mp4 ? `<source src="${escapeAttr(media.mp4)}" type="video/mp4">` : "",
       media.original ? `<source src="${escapeAttr(media.original)}">` : ""
     ].join("");
     const poster = media.original ? ` poster="${escapeAttr(media.original)}"` : "";
@@ -720,7 +743,7 @@ function renderMedia(media, className, alt, options = {}) {
     const fallback = media.original
       ? `<img class="${escapeAttr(`${className} preview-media-fallback`)}" src="${escapeAttr(media.original)}" alt="${escapeAttr(alt)}">`
       : "";
-    return `<video autoplay muted loop pip="false" playsinline preload="auto" x-webkit-airplay="allow" webkit-playsinline class="${escapeAttr(`${className} preview-media-video`)}"${poster}${style}>${sources}</video>${fallback}`;
+    return `<video autoplay muted loop pip="false" playsinline preload="metadata" x-webkit-airplay="allow" webkit-playsinline class="${escapeAttr(`${className} preview-media-video`)}"${poster}${style}>${sources}</video>${fallback}`;
   }
 
   if (media?.original) {
@@ -772,6 +795,7 @@ function resizeFrame(frame) {
 function hydrateFrameState(frame) {
   const doc = frame.contentDocument;
   if (!doc) return;
+  const observer = videoVisibilityObserver(doc);
 
   doc.querySelectorAll(".text-expander").forEach((expander) => {
     const button = expander.querySelector(".text-expander__btn");
@@ -785,6 +809,7 @@ function hydrateFrameState(frame) {
     video.controls = false;
     video.muted = true;
     video.playsInline = true;
+    video.preload = "metadata";
     video.disablePictureInPicture = true;
     const markReady = () => {
       const isReady = video.readyState >= 2;
@@ -797,9 +822,46 @@ function hydrateFrameState(frame) {
     video.addEventListener("loadeddata", markReady, { once: true });
     video.addEventListener("canplay", markReady, { once: true });
     markReady();
-    const playback = video.play();
-    if (playback?.catch) playback.catch(() => {});
+    if (observer && video.dataset.previewObserved !== "true") {
+      video.dataset.previewObserved = "true";
+      observer.observe(video);
+    }
+    syncVideoPlayback(video);
   });
+}
+
+function videoVisibilityObserver(doc) {
+  const win = doc.defaultView;
+  if (!win?.IntersectionObserver) return null;
+  if (win.__previewVideoVisibilityObserver) return win.__previewVideoVisibilityObserver;
+
+  win.__previewVideoVisibilityObserver = new win.IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const video = entry.target;
+      video.dataset.previewVisible = entry.isIntersecting ? "true" : "false";
+      syncVideoPlayback(video);
+    });
+  }, {
+    root: null,
+    rootMargin: "160px 0px",
+    threshold: 0.01
+  });
+
+  return win.__previewVideoVisibilityObserver;
+}
+
+function syncVideoPlayback(video) {
+  const win = video.ownerDocument?.defaultView;
+  const reduceMotion = win?.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const shouldPlay = video.isConnected && !reduceMotion && video.dataset.previewVisible !== "false";
+
+  if (!shouldPlay) {
+    if (!video.paused) video.pause();
+    return;
+  }
+
+  const playback = video.play();
+  if (playback?.catch) playback.catch(() => {});
 }
 
 function escapeHtml(value) {
