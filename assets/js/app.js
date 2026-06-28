@@ -384,6 +384,8 @@ function updateCurrentFrame(slot = null) {
 
   removeHydratedPlaceholders(doc);
   hydrateFrameState(frame);
+  resizeFrame(frame);
+  requestAnimationFrame(() => resizeFrame(frame));
 }
 
 async function loadProfileSnippet(profileId) {
@@ -424,6 +426,7 @@ function buildFrameDocument(profile, snippet) {
     video.wallpaper-wrapper-media,
     video.client-bg__cover,
     video.collectible-card__video { pointer-events: none; }
+    .collectible-card__blurhash { display: none !important; }
     .client-bg .preview-media-fallback {
       position: absolute;
       inset: 0;
@@ -496,6 +499,7 @@ function normalizeSnapshotAssets(root) {
 
 function hydrateCardVideos(root, profile) {
   const cardVideos = (profile.cards || []).filter((card) => card.video);
+  const doc = documentFor(root);
   let fallbackIndex = 0;
 
   root.querySelectorAll("video.collectible-card__video").forEach((video) => {
@@ -520,7 +524,7 @@ function hydrateCardVideos(root, profile) {
     if (card.image) video.setAttribute("poster", card.image);
 
     [card.video, card.videoMp4, card.mp4].filter(Boolean).forEach((url) => {
-      const source = root.ownerDocument.createElement("source");
+      const source = doc.createElement("source");
       source.setAttribute("src", url);
       source.setAttribute("type", sourceTypeForUrl(url));
       video.append(source);
@@ -544,6 +548,7 @@ function removeHydratedPlaceholders(root) {
 function hydrateLibraryCovers(root, profile) {
   const coversBySlug = profile.library?.coversBySlug || {};
   const items = profile.library?.items || [];
+  const doc = documentFor(root);
   const hasCoverData = Object.keys(coversBySlug).length || items.some((item) => isMangaCover(item.cover));
   if (!hasCoverData) return;
 
@@ -565,7 +570,7 @@ function hydrateLibraryCovers(root, profile) {
 
       let img = wrapper.querySelector("img");
       if (!img) {
-        img = root.ownerDocument.createElement("img");
+        img = doc.createElement("img");
         wrapper.append(img);
       }
 
@@ -660,9 +665,9 @@ function applyBanner(root) {
   }
 
   if (!banner) {
-    banner = root.ownerDocument.createElement("div");
+    banner = documentFor(root).createElement("div");
     banner.className = "banner-wrapper client-bg";
-    top.insertBefore(banner, top.firstChild);
+    top.insertBefore(banner, top.querySelector(".client-panel") || top.firstChild);
   }
 
   applyMediaFallback(banner, state.cosmetics.banner, "center");
@@ -694,7 +699,7 @@ function applyFrame(root) {
   }
 
   if (!frame) {
-    frame = root.ownerDocument.createElement("div");
+    frame = documentFor(root).createElement("div");
     frame.className = "avatar-frame";
     avatar.insertBefore(frame, avatarPic);
   }
@@ -754,6 +759,10 @@ function absoluteAssetUrl(href) {
 function localSenkuroAsset(pathname) {
   const filename = pathname.replace(/^\/assets\//, "");
   return absoluteAssetUrl(`assets/vendor/senkuro/${filename}`);
+}
+
+function documentFor(root) {
+  return root.ownerDocument || root;
 }
 
 function resizeFrame(frame) {
